@@ -9,6 +9,8 @@ import simplifile
 
 const input_path = "./inputs/day_01.txt"
 
+const puzzle_part = 2
+
 type CalibrationError {
   NoTwoDigitsError
   ParseIntError
@@ -51,10 +53,44 @@ fn get_calibration_value_for_line(line: String) -> Result(Int, CalibrationError)
 }
 
 fn get_digits(line: String) -> List(Int) {
+  case puzzle_part {
+    1 -> find_digits_only_numeric(line)
+    2 -> find_digits_letters_included(line)
+    _ -> []
+  }
+}
+
+fn find_digits_only_numeric(line: String) -> List(Int) {
   line
   |> string.to_graphemes
   |> list.map(int.parse)
   |> result.values
+}
+
+fn find_digits_letters_included(line: String) -> List(Int) {
+  case line {
+    "" -> []
+    "0" <> rest -> [0, ..find_digits_letters_included(rest)]
+    "1" <> rest -> [1, ..find_digits_letters_included(rest)]
+    "2" <> rest -> [2, ..find_digits_letters_included(rest)]
+    "3" <> rest -> [3, ..find_digits_letters_included(rest)]
+    "4" <> rest -> [4, ..find_digits_letters_included(rest)]
+    "5" <> rest -> [5, ..find_digits_letters_included(rest)]
+    "6" <> rest -> [6, ..find_digits_letters_included(rest)]
+    "7" <> rest -> [7, ..find_digits_letters_included(rest)]
+    "8" <> rest -> [8, ..find_digits_letters_included(rest)]
+    "9" <> rest -> [9, ..find_digits_letters_included(rest)]
+    "one" <> rest -> [1, ..find_digits_letters_included("ne" <> rest)]
+    "two" <> rest -> [2, ..find_digits_letters_included("wo" <> rest)]
+    "three" <> rest -> [3, ..find_digits_letters_included("hree" <> rest)]
+    "four" <> rest -> [4, ..find_digits_letters_included("our" <> rest)]
+    "five" <> rest -> [5, ..find_digits_letters_included("ive" <> rest)]
+    "six" <> rest -> [6, ..find_digits_letters_included("ix" <> rest)]
+    "seven" <> rest -> [7, ..find_digits_letters_included("even" <> rest)]
+    "eight" <> rest -> [8, ..find_digits_letters_included("ight" <> rest)]
+    "nine" <> rest -> [9, ..find_digits_letters_included("ine" <> rest)]
+    _ -> find_digits_letters_included(string.drop_left(line, 1))
+  }
 }
 
 fn get_first_and_last_digits(
